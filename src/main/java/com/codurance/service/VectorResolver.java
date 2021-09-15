@@ -16,7 +16,7 @@ import static java.lang.String.format;
 
 public class VectorResolver {
 
-    private Grid grid;
+    private final Grid grid;
 
     public VectorResolver(Grid grid) {
         this.grid = grid;
