@@ -12,6 +12,7 @@ import static com.codurance.model.Direction.SOUTH;
 import static com.codurance.model.Direction.WEST;
 import static com.codurance.model.Direction.values;
 import static com.codurance.model.Grid.BOUNDARY;
+import static java.lang.String.format;
 
 public class VectorResolver {
 
@@ -50,7 +51,7 @@ public class VectorResolver {
 
         Coordinate coordinateOnGrid = grid.get(nextCoordinate);
         if (coordinateOnGrid instanceof Obstacle) {
-            throw new ObstacleEncounteredException();
+            throw new ObstacleEncounteredException(format("Encountered obstacle at %d, %d", nextCoordinate.x, nextCoordinate.y));
         }
 
         return nextCoordinate;

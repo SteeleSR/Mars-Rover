@@ -12,15 +12,14 @@ import java.util.List;
 import static com.codurance.model.Command.LEFT;
 import static com.codurance.model.Command.MOVE;
 import static com.codurance.model.Command.RIGHT;
-import static com.codurance.service.CommandParser.parseKnownCommands;
 import static com.codurance.model.Direction.NORTH;
+import static com.codurance.service.CommandParser.parseKnownCommands;
 import static java.lang.String.format;
 
 public class Rover {
 
     private Direction direction = NORTH;
     private Coordinate coordinate = new Coordinate();
-    private String obstacleEncounteredIndicator = "";
 
     private final VectorResolver vectorResolver;
 
@@ -29,36 +28,31 @@ public class Rover {
     }
 
     public String execute(String command) {
-        List<Command> parsedCommands = parseKnownCommands(command);
+        try {
+            return attemptCommandExecution(command);
+        } catch (ObstacleEncounteredException exception) {
+            return "O:" + getFormattedCurrentPosition();
+        }
+    }
 
-        for(Command parsedCommand : parsedCommands) {
+    private String attemptCommandExecution(String command) {
+        List<Command> parsedCommands = parseKnownCommands(command);
+        for (Command parsedCommand : parsedCommands) {
             if (parsedCommand == RIGHT)
-                rotateRight();
+                direction = vectorResolver.resolveNextLeftRotation(direction);
 
             if (parsedCommand == LEFT)
-                rotateLeft();
+                direction = vectorResolver.resolveNextRightRotation(direction);
 
-            if(parsedCommand == MOVE)
-                move();
+            if (parsedCommand == MOVE)
+                coordinate = vectorResolver.resolveNextCoordinate(coordinate, direction);
         }
 
-        return format("%s%d:%d:%s", obstacleEncounteredIndicator, coordinate.x, coordinate.y, direction.compass);
+        return getFormattedCurrentPosition();
     }
 
-    private void rotateLeft() {
-        direction = vectorResolver.resolveNextLeftRotation(direction);
-    }
-
-    private void rotateRight() {
-        direction = vectorResolver.resolveNextRightRotation(direction);
-    }
-
-    private void move() {
-        try {
-            coordinate = vectorResolver.resolveNextCoordinate(coordinate, direction);
-        } catch(ObstacleEncounteredException exception) {
-            obstacleEncounteredIndicator = "O:";
-        }
+    private String getFormattedCurrentPosition() {
+        return format("%d:%d:%s", coordinate.x, coordinate.y, direction.compass);
     }
 
 }
