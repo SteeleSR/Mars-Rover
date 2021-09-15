@@ -39,10 +39,10 @@ public class Rover {
         List<Command> parsedCommands = parseKnownCommands(command);
         for (Command parsedCommand : parsedCommands) {
             if (parsedCommand == RIGHT)
-                direction = vectorResolver.resolveNextLeftRotation(direction);
+                direction = vectorResolver.resolveNextRightRotation(direction);
 
             if (parsedCommand == LEFT)
-                direction = vectorResolver.resolveNextRightRotation(direction);
+                direction = vectorResolver.resolveNextLeftRotation(direction);
 
             if (parsedCommand == MOVE)
                 coordinate = vectorResolver.resolveNextCoordinate(coordinate, direction);
