@@ -1,4 +1,4 @@
-package com.codurance;
+package com.codurance.model;
 
 public class Coordinate {
     public final int x;

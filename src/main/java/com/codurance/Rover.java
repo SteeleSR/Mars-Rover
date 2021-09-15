@@ -1,13 +1,20 @@
 package com.codurance;
 
-import java.util.List;
-import java.util.Optional;
+import com.codurance.error.ObstacleEncounteredException;
+import com.codurance.model.Command;
+import com.codurance.model.Coordinate;
+import com.codurance.model.Direction;
+import com.codurance.model.Grid;
+import com.codurance.service.VectorResolver;
 
-import static com.codurance.Command.LEFT;
-import static com.codurance.Command.RIGHT;
-import static com.codurance.Command.MOVE;
-import static com.codurance.CommandParser.parseKnownCommands;
-import static com.codurance.Direction.NORTH;
+import java.util.List;
+
+import static com.codurance.model.Command.LEFT;
+import static com.codurance.model.Command.MOVE;
+import static com.codurance.model.Command.RIGHT;
+import static com.codurance.service.CommandParser.parseKnownCommands;
+import static com.codurance.model.Direction.NORTH;
+import static java.lang.String.format;
 
 public class Rover {
 
@@ -17,8 +24,8 @@ public class Rover {
 
     private final VectorResolver vectorResolver;
 
-    public Rover(Optional<Coordinate> obstacle) {
-        this.vectorResolver = new VectorResolver(obstacle);
+    public Rover(Grid grid) {
+        this.vectorResolver = new VectorResolver(grid);
     }
 
     public String execute(String command) {
@@ -35,7 +42,7 @@ public class Rover {
                 move();
         }
 
-        return String.format("%s%d:%d:%s", obstacleEncounteredIndicator, coordinate.x, coordinate.y, direction.compass);
+        return format("%s%d:%d:%s", obstacleEncounteredIndicator, coordinate.x, coordinate.y, direction.compass);
     }
 
     private void rotateLeft() {

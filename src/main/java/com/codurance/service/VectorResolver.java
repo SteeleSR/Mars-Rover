@@ -1,20 +1,24 @@
-package com.codurance;
+package com.codurance.service;
 
-import java.util.Optional;
+import com.codurance.error.ObstacleEncounteredException;
+import com.codurance.model.Coordinate;
+import com.codurance.model.Direction;
+import com.codurance.model.Grid;
+import com.codurance.model.Obstacle;
 
-import static com.codurance.Direction.EAST;
-import static com.codurance.Direction.NORTH;
-import static com.codurance.Direction.SOUTH;
-import static com.codurance.Direction.WEST;
-import static com.codurance.Direction.values;
+import static com.codurance.model.Direction.EAST;
+import static com.codurance.model.Direction.NORTH;
+import static com.codurance.model.Direction.SOUTH;
+import static com.codurance.model.Direction.WEST;
+import static com.codurance.model.Direction.values;
+import static com.codurance.model.Grid.BOUNDARY;
 
 public class VectorResolver {
 
-    private static final int GRID_BOUNDARY = 10;
-    private Optional<Coordinate> obstacle;
+    private Grid grid;
 
-    public VectorResolver(Optional<Coordinate> obstacle) {
-        this.obstacle = obstacle;
+    public VectorResolver(Grid grid) {
+        this.grid = grid;
     }
 
     public Direction resolveNextRightRotation(Direction currentDirection) {
@@ -44,11 +48,9 @@ public class VectorResolver {
     public Coordinate resolveNextCoordinate(Coordinate currentCoordinate, Direction currentDirection) throws ObstacleEncounteredException {
         Coordinate nextCoordinate = resolveNextPotentialCoordinate(currentCoordinate, currentDirection);
 
-        if (obstacle.isPresent()) {
-            Coordinate tempObstacle = obstacle.get();
-            if(nextCoordinate.x == tempObstacle.x && nextCoordinate.y == tempObstacle.y) {
-                throw new ObstacleEncounteredException();
-            }
+        Coordinate coordinateOnGrid = grid.get(nextCoordinate);
+        if (coordinateOnGrid instanceof Obstacle) {
+            throw new ObstacleEncounteredException();
         }
 
         return nextCoordinate;
@@ -59,16 +61,16 @@ public class VectorResolver {
         int y = currentCoordinate.y;
 
         if (currentDirection == NORTH)
-            y = incrementWithinRange(y, GRID_BOUNDARY);
+            y = incrementWithinRange(y, BOUNDARY);
 
         if (currentDirection == SOUTH)
-            y = decrementWithinRange(y, GRID_BOUNDARY);
+            y = decrementWithinRange(y, BOUNDARY);
 
         if (currentDirection == EAST)
-            x = incrementWithinRange(x, GRID_BOUNDARY);
+            x = incrementWithinRange(x, BOUNDARY);
 
-        if(currentDirection == WEST)
-            x = decrementWithinRange(x, GRID_BOUNDARY);
+        if (currentDirection == WEST)
+            x = decrementWithinRange(x, BOUNDARY);
 
         return new Coordinate(x, y);
     }

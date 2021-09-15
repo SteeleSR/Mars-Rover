@@ -1,4 +1,6 @@
-package com.codurance;
+package com.codurance.service;
+
+import com.codurance.model.Command;
 
 import java.util.Arrays;
 import java.util.List;

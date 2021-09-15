@@ -1,18 +1,16 @@
-import com.codurance.Coordinate;
+import com.codurance.model.Grid;
+import com.codurance.model.Obstacle;
 import com.codurance.Rover;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.Optional;
-
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RoverShould {
 
-    private Rover target = new Rover(empty());
+    private Grid grid = new Grid();
+    private Rover target = new Rover(grid);
 
     @ParameterizedTest
     @CsvSource({
@@ -58,7 +56,8 @@ public class RoverShould {
 
     @Test void
     avoid_obstacle() {
-        Rover target = new Rover(of(new Coordinate(0, 3)));
+        grid.add(new Obstacle(0, 3));
+        Rover target = new Rover(grid);
 
         assertEquals("O:0:2:N", target.execute("MMMM"));
     }
