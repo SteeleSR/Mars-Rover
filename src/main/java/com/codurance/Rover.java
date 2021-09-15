@@ -35,7 +35,7 @@ public class Rover {
         }
     }
 
-    private String attemptCommandExecution(String command) {
+    private String attemptCommandExecution(String command) throws ObstacleEncounteredException {
         List<Command> parsedCommands = parseKnownCommands(command);
         for (Command parsedCommand : parsedCommands) {
             if (parsedCommand == RIGHT)
