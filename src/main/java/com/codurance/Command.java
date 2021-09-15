@@ -2,7 +2,8 @@ package com.codurance;
 
 public enum Command {
     LEFT("L"),
-    RIGHT("R");
+    RIGHT("R"),
+    MOVE("M");
 
     public final String input;
 
