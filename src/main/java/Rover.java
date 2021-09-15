@@ -1,25 +1,26 @@
 public class Rover {
     private Direction direction = Direction.NORTH;
     public String execute(String command) {
-        String nextCompass = direction.rightOf;
-        direction = Direction.valueOf(nextCompass);
+        rotateRight();
         return direction.compass;
+    }
+
+    private void rotateRight() {
+        int nextDirectionIndex = direction.ordinal() + 1;
+        Direction[] directions = Direction.values();
+        direction = directions[nextDirectionIndex % directions.length];
     }
 }
 
 enum Direction {
-    NORTH("N", "WEST", "EAST"),
-    EAST("E", "NORTH", "SOUTH"),
-    SOUTH("S", "EAST", "WEST"),
-    WEST("W", "SOUTH", "NORTH");
+    NORTH("N"),
+    EAST("E"),
+    SOUTH("S"),
+    WEST("W");
 
     public String compass;
-    public String leftOf;
-    public String rightOf;
 
-    Direction(String compass, String leftOf, String rightOf) {
+    Direction(String compass) {
         this.compass = compass;
-        this.leftOf = leftOf;
-        this.rightOf = rightOf;
     }
 }
