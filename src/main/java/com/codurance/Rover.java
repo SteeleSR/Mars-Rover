@@ -1,20 +1,25 @@
 package com.codurance;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.codurance.Command.LEFT;
 import static com.codurance.Command.RIGHT;
 import static com.codurance.Command.MOVE;
 import static com.codurance.CommandParser.parseKnownCommands;
 import static com.codurance.Direction.NORTH;
-import static com.codurance.VectorResolver.resolveNextCoordinate;
-import static com.codurance.VectorResolver.resolveNextLeftRotation;
-import static com.codurance.VectorResolver.resolveNextRightRotation;
 
 public class Rover {
 
     private Direction direction = NORTH;
     private Coordinate coordinate = new Coordinate();
+    private String obstacleEncounteredIndicator = "";
+
+    private final VectorResolver vectorResolver;
+
+    public Rover(Optional<Coordinate> obstacle) {
+        this.vectorResolver = new VectorResolver(obstacle);
+    }
 
     public String execute(String command) {
         List<Command> parsedCommands = parseKnownCommands(command);
@@ -30,19 +35,24 @@ public class Rover {
                 move();
         }
 
-        return String.format("%d:%d:%s", coordinate.x, coordinate.y, direction.compass);
+        return String.format("%s%d:%d:%s", obstacleEncounteredIndicator, coordinate.x, coordinate.y, direction.compass);
     }
 
     private void rotateLeft() {
-        direction = resolveNextLeftRotation(direction);
+        direction = vectorResolver.resolveNextLeftRotation(direction);
     }
 
     private void rotateRight() {
-        direction = resolveNextRightRotation(direction);
+        direction = vectorResolver.resolveNextRightRotation(direction);
     }
 
     private void move() {
-        coordinate = resolveNextCoordinate(coordinate, direction);
+        try {
+            coordinate = vectorResolver.resolveNextCoordinate(coordinate, direction);
+        } catch(ObstacleEncounteredException exception) {
+            obstacleEncounteredIndicator = "O:";
+        }
     }
+
 }
 
